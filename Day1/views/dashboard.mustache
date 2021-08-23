@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h1>Welcome, {{username}}</h1>
+<div>
+<form method="POST" action="/movies/add-movie">
+<input type="text" placeholder="Movie Title" name="title"/>
+<input type="text" placeholder="Enter Description" name="description"/>
+<input type="text" placeholder="Enter Genre" name="genre"/>
+<input type="text" placeholder="Enter Poster URL" name="posterURL"/>
+<button>Submit</button>
+</form>
+<div>
+<h3>Type movie ID for more details</h3>
+<form method="POST" action="/movies/details">
+<input type="text" placeholder="Movie ID" name="id"/>
+<button>Get Movie Details</button>
+</form>
+</div>
+    <div>
+    <ul>
+    {{#myMovies}}
+    <form method="POST" action="/movies/delete-movie">
+    <li>ID: {{id}}</li>
+    <li>Title: {{title}}</li>
+    <li>Description: {{description}}</li>
+    <li>Genre: {{genre}}</li>
+    <li>Poster URL: {{posterURL}}</li>
+    <input type='hidden' value={{id}} name="id"/>
+    <button>Delete</button>
+    </form>
+    {{/myMovies}}
+    </ul>
+    </div>
+</body>
+</html>
