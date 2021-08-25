@@ -38,12 +38,12 @@
     <ul>
     {{#movies}}
     <form method="POST" action="/movies/delete-movie">
-    <li>ID: {{id}}</li>
+    <li>ID: {{movie_id}}</li>
     <li>Title: {{title}}</li>
     <li>Description: {{description}}</li>
     <li>Genre: {{genre}}</li>
     <li>Poster URL: {{posterURL}}</li>
-    <input type='hidden' value={{id}} name="id"/>
+    <input type='hidden' value={{movie_id}} name="id"/>
     <button>Delete</button>
     </form>
     {{/movies}}

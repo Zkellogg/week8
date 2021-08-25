@@ -4,6 +4,7 @@ const pgp = require("pg-promise")();
 const connectionString =
   "postgres://jigzmpev:ag-e4iYZ-g4kQOgnmVn4i-E6CYb2F_pl@chunee.db.elephantsql.com/jigzmpev";
 const db = pgp(connectionString);
+var bcrypt = require("bcryptjs");
 
 // global.users = [
 //   { username: "john", password: "test1" },
@@ -22,11 +23,29 @@ router.post("/register", (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
 
-  db.none('INSERT INTO users(username, "password") VALUES($1, $2)', [
-    username,
-    password,
-  ]).then(() => {
-    res.redirect("/");
+  bcrypt.genSalt(10, function (error, salt) {
+    if (!error) {
+      bcrypt.hash(password, salt, function (error, hash) {
+        if (!error) {
+          db.none('INSERT INTO users(username, "password") VALUES($1, $2)', [
+            username,
+            hash,
+          ]).then(() => {
+            res.render("login", {
+              loginMessage: "Use new crediantials to login here!",
+            });
+          });
+        } else {
+          res.render("registration", {
+            regError: "Could not process registration.",
+          });
+        }
+      });
+    } else {
+      res.render("registration", {
+        regError: "Could not process registration.",
+      });
+    }
   });
 });
 
@@ -38,18 +57,26 @@ router.post("/login", (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
 
-  const currentUser = users.find((user) => {
-    return user.username == username && user.password == password;
-  });
-
-  if (currentUser) {
-    if (req.session) {
-      req.session.username = currentUser.username;
-    }
-    res.redirect("dashboard");
-  } else {
-    res.render("login", { errorMessage: "Username or Password Incorrect" });
-  }
+  db.one("SELECT user_id, username, password FROM users WHERE username = $1", [
+    username,
+  ])
+    .then((user) => {
+      bcrypt.compare(password, user.password, function (error, result) {
+        if (result) {
+          if (req.session) {
+            req.session.userID = user.user_id;
+          }
+          res.render("dashboard", { username: username });
+        } else {
+          res.render("login", {
+            errorMessage: "Username or Password Incorrect",
+          });
+        }
+      });
+    })
+    .catch((error) => {
+      res.send("USER NOT FOUND");
+    });
 });
 
 // global.myMovies = [];

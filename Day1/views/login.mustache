@@ -7,11 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Registraton</h1>
+    <h1>Login Page</h1>
+    <h4>{{loginMessage}}</h4>
+    <h4>{{errorMessage}}</h4>
     <div>
     <form method="POST" action="/users/login">
     <input type="text" name="username" placeholder="Username">
-    <input type="text" name="password" placeholder="Password">
+    <input type="password" name="password" placeholder="Password">
     <button>Login!</button>
     </form>
     </div>

@@ -39,7 +39,7 @@ app.set("views", "./views");
 app.set("view engine", "mustache");
 
 app.get("/", (req, res) => {
-  db.any("SELECT * FROM movies").then((movies) => {
+  db.any("SELECT * FROM moviestwo").then((movies) => {
     res.render("index", { movies: movies });
   });
 });

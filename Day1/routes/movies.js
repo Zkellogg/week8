@@ -19,7 +19,7 @@ router.post("/add-movie", (req, res) => {
 
   if (req.session) {
     db.none(
-      'INSERT INTO movies("userID", title, description, genre, "posterURL") VALUES($1, $2, $3, $4, $5)',
+      'INSERT INTO moviestwo("user_id", title, description, genre, "posterURL") VALUES($1, $2, $3, $4, $5)',
       [userID, title, description, genre, posterURL]
     ).then(() => {
       res.redirect("/");
@@ -30,7 +30,7 @@ router.post("/add-movie", (req, res) => {
 router.post("/delete-movie", (req, res) => {
   const { id } = req.body;
 
-  db.none('DELETE FROM movies WHERE "id" = $1', [id]).then(() => {
+  db.none('DELETE FROM moviestwo WHERE "movie_id" = $1', [id]).then(() => {
     res.redirect("/");
   });
 });
@@ -42,7 +42,7 @@ router.get("/filter-genre", (req, res) => {
 router.post("/filter-genre", (req, res) => {
   const { genre } = req.body;
 
-  db.any("SELECT * FROM movies WHERE genre= $1", [genre]).then((movies) => {
+  db.any("SELECT * FROM moviestwo WHERE genre= $1", [genre]).then((movies) => {
     res.render("filteredGenre", { movies: movies });
   });
 
@@ -59,7 +59,7 @@ router.get("/details", (req, res) => {
 
 router.post("/details", (req, res) => {
   const { id } = req.body;
-  db.any('SELECT * FROM movies WHERE "id" = $1', [id]).then((movies) => {
+  db.any('SELECT * FROM moviestwo WHERE "id" = $1', [id]).then((movies) => {
     res.render("movieDetails", { movies: movies });
   });
 
