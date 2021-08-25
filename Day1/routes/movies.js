@@ -1,27 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const pgp = require("pg-promise")();
-const connectionString =
-  "postgres://jigzmpev:ag-e4iYZ-g4kQOgnmVn4i-E6CYb2F_pl@chunee.db.elephantsql.com/jigzmpev";
-const db = pgp(connectionString);
+// const pgp = require("pg-promise")();
+// const connectionString =
+//   "postgres://jigzmpev:ag-e4iYZ-g4kQOgnmVn4i-E6CYb2F_pl@chunee.db.elephantsql.com/jigzmpev";
+// const db = pgp(connectionString);
 
 global.moviesByGenre = [];
 global.movieDetails = [];
 
 router.post("/add-movie", (req, res) => {
-  const userID = req.session.username;
+  // const userID = req.session.username;
 
   // const id = movies.length + 1;
   const { title } = req.body;
   const { description } = req.body;
   const { genre } = req.body;
-  const { posterURL } = req.body;
 
   if (req.session) {
-    db.none(
-      'INSERT INTO moviestwo("user_id", title, description, genre, "posterURL") VALUES($1, $2, $3, $4, $5)',
-      [userID, title, description, genre, posterURL]
-    ).then(() => {
+    const movie = models.Movies.build({
+      title: title,
+      genre: genre,
+      description: description,
+    });
+    movie.save().then((savedMovie) => {
       res.redirect("/");
     });
   }
@@ -29,8 +30,11 @@ router.post("/add-movie", (req, res) => {
 
 router.post("/delete-movie", (req, res) => {
   const { id } = req.body;
-
-  db.none('DELETE FROM moviestwo WHERE "movie_id" = $1', [id]).then(() => {
+  models.Movies.destroy({
+    where: {
+      id: id,
+    },
+  }).then(() => {
     res.redirect("/");
   });
 });
@@ -42,30 +46,35 @@ router.get("/filter-genre", (req, res) => {
 router.post("/filter-genre", (req, res) => {
   const { genre } = req.body;
 
-  db.any("SELECT * FROM moviestwo WHERE genre= $1", [genre]).then((movies) => {
+  models.Movies.findAll({
+    where: {
+      genre: genre,
+    },
+  }).then((movies) => {
     res.render("filteredGenre", { movies: movies });
   });
-
-  // moviesByGenre = [];
-
-  // moviesByGenre = movies.filter((movie) => movie.genre == genre);
-
-  // res.render("filteredGenre", { moviesByGenre: moviesByGenre });
 });
 
-router.get("/details", (req, res) => {
-  res.render("movieDetails");
-});
+// moviesByGenre = [];
 
-router.post("/details", (req, res) => {
-  const { id } = req.body;
-  db.any('SELECT * FROM moviestwo WHERE "id" = $1', [id]).then((movies) => {
-    res.render("movieDetails", { movies: movies });
-  });
+// moviesByGenre = movies.filter((movie) => movie.genre == genre);
 
-  // movieDetails = movies.filter((movie) => movie.id == id);
+// res.render("filteredGenre", { moviesByGenre: moviesByGenre });
+// });
 
-  // res.render("movieDetails", { movieDetails: movieDetails });
-});
+// router.get("/details", (req, res) => {
+//   res.render("movieDetails");
+// });
+
+// router.post("/details", (req, res) => {
+//   const { id } = req.body;
+//   db.any('SELECT * FROM moviestwo WHERE "id" = $1', [id]).then((movies) => {
+//     res.render("movieDetails", { movies: movies });
+//   });
+
+// movieDetails = movies.filter((movie) => movie.id == id);
+
+// res.render("movieDetails", { movieDetails: movieDetails });
+// });
 
 module.exports = router;

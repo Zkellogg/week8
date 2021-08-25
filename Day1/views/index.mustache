@@ -23,27 +23,27 @@
 <input type="text" placeholder="Movie Title" name="title"/>
 <input type="text" placeholder="Enter Description" name="description"/>
 <input type="text" placeholder="Enter Genre" name="genre"/>
-<input type="text" placeholder="Enter Poster URL" name="posterURL"/>
+{{! <input type="text" placeholder="Enter Poster URL" name="posterURL"/> }}
 <button>Submit</button>
 </form>
 <div>
-<h3>Type movie ID for more details</h3>
+{{! <h3>Type movie ID for more details</h3>
 <form method="POST" action="/movies/details">
 <input type="text" placeholder="Movie ID" name="id"/>
 <button>Get Movie Details</button>
-</form>
+</form> }}
 </div>
 <a href="http://localhost:3000/movies/filter-genre">Click Here to Filter movies by Genre</a>
     <div>
     <ul>
     {{#movies}}
     <form method="POST" action="/movies/delete-movie">
-    <li>ID: {{movie_id}}</li>
+    <li>ID: {{id}}</li>
     <li>Title: {{title}}</li>
     <li>Description: {{description}}</li>
     <li>Genre: {{genre}}</li>
     <li>Poster URL: {{posterURL}}</li>
-    <input type='hidden' value={{movie_id}} name="id"/>
+    <input type='hidden' value={{id}} name="id"/>
     <button>Delete</button>
     </form>
     {{/movies}}
