@@ -12,6 +12,7 @@ generator client {
 
 model User {
   id       Int    @id @default(autoincrement())
+  test_id  Int    @default(100)
   username String @unique @db.VarChar(255)
   password String @db.VarChar(255)
   posts    Post[]
